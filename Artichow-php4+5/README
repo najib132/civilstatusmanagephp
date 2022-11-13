@@ -1,0 +1,120 @@
+  I. Installation
+ II. Configuration
+III. Utilisation
+ IV. Divers
+
+
+I. Installation
+   ------------
+
+*** Premi&egrave;re installation ***
+
+L'installation de Artichow se r&eacute;sume &agrave; d&eacute;compresser l'archive dans le dossier
+de votre choix sur votre serveur. Veillez simplement &agrave; t&eacute;l&eacute;charger l'archive
+dont vous avez vraiment besoin (PHP 5 ou PHP 4 & 5).
+Notez que Artichow requiert GD 2 et PHP 4.3.0 au minimum pour fonctionner.
+
+*** Mise &agrave; jour ***
+
+Lorsque vous souhaitez mettre &agrave; jour Artichow avec la derni&egrave;re version,
+essayez de suivre pas &agrave; pas ces &eacute;tapes :
+   1) D&eacute;compressez la derni&egrave;re version de Artichow dans un dossier
+   2) Ecrasez le fichier Artichow.cfg.php avec votre ancien fichier
+   3) Copiez vos patterns dans le dossier patterns/ de la nouvelle version
+	4) Supprimez l'ancienne version de Artichow de votre disque
+	5) Copiez la nouvelle version l&agrave; où &eacute;tait l'ancienne
+Une fois ces cinq &eacute;tapes effectu&eacute;es, vous n'aurez plus qu'&agrave; mettre
+&eacute;ventuellement &agrave; jour vos graphiques, en fonction des derni&egrave;res &eacute;volutions de
+l'API de Artichow. Pour cela, voyez le titre "Migrer d'une version &agrave; l'autre"
+sur la page :
+http://www.artichow.org/documentation
+
+II. Configuration
+    -------------
+
+Même si une utilisation normale de Artichow ne n&eacute;cessite pas de configuration
+particuli&egrave;re, il existe un fichier Artichow.cfg.php qui permet de modifier
+quelques param&egrave;tres de la librairie.
+Vous pouvez notamment configurer le r&eacute;pertoire vers les polices de caract&egrave;re
+en modifiant la constante ARTICHOW_FONT (par exemple en choisissant
+'c:\Windows\font' si vous êtes sous Windows).
+Vous pouvez &eacute;galement red&eacute;finir la variable $fonts. Cette variable contient une
+liste de polices TTF (sans l'extension) pr&eacute;sentes dans votre r&eacute;pertoire
+ARTICHOW_FONT. Pour toutes les polices de cette liste, une classe du même nom
+est cr&eacute;&eacute;e. Les polices ainsi d&eacute;finies peuvent ensuite être utilis&eacute;es de cette
+mani&egrave;re :
+<?php
+$font = new Verdana(12); // 12 repr&eacute;sente la taille en points
+?>
+Il existe &eacute;galement une constante ARTICHOW_DEPRECATED. Si cette constante vaut
+TRUE, alors un message d'erreur sera affich&eacute; lorsque vous utiliserez une
+fonctionnalit&eacute; d&eacute;pr&eacute;ci&eacute;e de Artichow. A l'inverse, avec la valeur FALSE,
+vous pourrez continuer &agrave; utiliser les fonctions d&eacute;pr&eacute;ci&eacute;es sans soucis.
+Cependant, dans un souci de compatibilit&eacute;, il est pr&eacute;f&eacute;rable de mettre &agrave;
+jour vos graphiques d&egrave;s lors qu'un message de ce type apparaît (et donc de
+laisser la constante &agrave; TRUE). Les fonctionnalit&eacute;s d&eacute;pr&eacute;ci&eacute;es sont toujours
+potentiellement susceptibles de disparaître d'une version &agrave; l'autre de la
+librairie.
+La constante ARTICHOW_PREFIX est vide par d&eacute;faut et correspond &agrave; un pr&eacute;fixe qui
+est ajout&eacute; au nom de chaque classe utilis&eacute;e sur Artichow. Certains noms de
+classe (Graph, Image, Text, Font, etc.) sont utilis&eacute;s par d'autres librairies
+et cela peut aboutir &agrave; des conflits. Pour r&eacute;soudre ce probl&egrave;me, choisissez par
+exemple 'xyz' comme pr&eacute;fixe et toutes les classes de Artichow s'app&egrave;leront
+d&eacute;sormais xyz[Nom normal]. Exemple d'utilisation de Artichow avec
+ARTICHOW_PREFIX &agrave; 'xyz' :
+<?php
+require_once "Artichow/LinePlot.class.php";
+
+$plot = new xyzLinePlot(array(1, 2, 3));
+$plot->title->set('Mon graphique');
+$plot->title->setFont(new xyzFont4);
+
+$graph = new xyzGraph(400, 300);
+$graph->add($plot);
+$graph->draw();
+?>
+
+
+III. Utilisation
+     -----------
+
+Si vous utilisez la version con&ccedil;ue exclusivement pour PHP 5, vous pouvez vous
+r&eacute;f&eacute;rer aux exemples et aux tutoriels afin de bien prendre en main la
+librairie.
+Si vous utilisez la version pour PHP 4 & 5, r&eacute;f&eacute;rez vous &eacute;galement aux exemples
+et tutoriels mais faîtes attention lors de l'inclusion des fichiers de
+Artichow. N'incluez pas les fichiers de cette mani&egrave;re :
+<?php
+// Ceci ne fonctionnera pas
+require_once "Artichow/php5/LinePlot.class.php";
+// Cela non plus
+require_once "Artichow/php4/LinePlot.class.php";
+?>
+Pr&eacute;f&eacute;rez plutôt :
+<?php
+// Fonctionnera correctement
+require_once "Artichow/LinePlot.class.php";
+?>
+C'est la librairie qui se charge de s&eacute;lectionner les bons fichiers en fonction
+de la version de PHP dont vous disposez.
+
+IV. Divers
+    ------
+
+La documentation de Artichow est disponible sur :
+http://www.artichow.org/documentation
+
+Des tutoriels sont accessibles sur :
+http://www.artichow.org/tutorial
+
+Un forum de support peut être trouv&eacute; sur :
+http://www.artichow.org/forum/
+
+N'oubliez pas que Artichow est dans le domaine public. Vous pouvez donc faire
+CE QUE VOUS SOUHAITEZ avec cette librairie, y compris ajouter votre nom dans
+chaque fichier, et la redistribuer ainsi.
+
+Si vous souhaitez aider et participer au d&eacute;veloppement de Artichow, n'h&eacute;sitez
+pas &agrave; consulter cette page :
+http://www.artichow.org/help
+

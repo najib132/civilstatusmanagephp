@@ -1,0 +1,946 @@
+<?php 
+session_start();
+error_reporting(E_ALL ^ E_NOTICE);      include"conn/connexion.php";
+
+$permission=$_SESSION["permission"];                                                                 $section=$_SESSION["section"];      
+$section1=$_SESSION["section1"];  
+
+
+$pays=$_SESSION["pays"];      
+$pays1=$_SESSION["pays1"];  
+
+$ministre=$_SESSION["ministre"];      
+$ministre1=$_SESSION["ministre1"];      
+
+$province=$_SESSION["province"];      
+$province1=$_SESSION["province1"];      
+
+$annexe=$_SESSION["annexe"];      
+$annexe1=$_SESSION["annexe1"];     $region=$_SESSION["region"];  $region1=$_SESSION["region1"];      
+
+   $idf=$_SESSION["idf"];
+   $idf_m=$_SESSION["idf_m"];
+   
+$ch = $_GET["ch"];   
+$ch1 = $_GET["ch1"];
+$ch2 = $_GET["ch2"];
+ 
+ $annee_declaration = addslashes($_GET["annee_declaration"]);
+$code = addslashes($_GET["code"]);
+$partie = addslashes($_GET["partie"]);
+$req = addslashes($_GET["req"]);
+
+   
+ include"accesclient1.php";
+if ($permission==securite2($tim2)) { //include("div.php");  
+
+
+ $Requete3 = "select dir_date_h,annee,annee_h,partie,officier_a,lien_a,dir_date,prof_p_a,prof_m_a, mois,mois_a from utilisateurs  where `id`='".$idf_m."'  ";
+mysql_query("SET NAMES 'UTF8' ");
+$result3 = @mysql_query($Requete3,$id) or die ("<br>Probl&egrave;me lors de la lecture de la table<br>".mysql_error());
+
+	$row = mysql_fetch_array($result3);
+
+$dir_date=$row[dir_date];
+$dir_date_h=$row[dir_date_h];
+?>
+
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+<title>  برنامج تسيير مصلحة الحالة المدنية سيفيل بروكرما </title>      
+
+
+
+   <style type="text/css">
+<!--
+.style39 {font-size: 18px}
+.style4 {font-size: 14px}
+.style40 {font-size: 16px}
+-->
+   </style>
+</head>
+<body>
+
+
+
+
+<p>
+  <?php
+
+function int2str($a){
+	if ($a<0) return 'moins '.int2str(-$a);
+	if ($a<17){
+		switch ($a){
+			case 0: return '';
+			case 1: return 'un';
+			case 2: return 'deux';
+			case 3: return 'trois';
+			case 4: return 'quatre';
+			case 5: return 'cinq';
+			case 6: return 'six';
+			case 7: return 'sept';
+			case 8: return 'huit';
+			case 9: return 'neuf';
+			case 10: return 'dix';
+			case 11: return 'onze';
+			case 12: return 'douze';
+			case 13: return 'treize';
+			case 14: return 'quatorze';
+			case 15: return 'quinze';
+			case 16: return 'seize';
+		}
+	} else if ($a<20){
+		return 'dix-'.int2str($a-10);
+	} else if ($a<100){
+		if ($a%10==0){
+			switch ($a){
+				case 20: return 'vingt';
+				case 30: return 'trente';
+				case 40: return 'quarante';
+				case 50: return 'cinquante';
+				case 60: return 'soixante';
+				case 70: return 'soixante-dix';
+				case 80: return 'quatre-vingt';
+				case 90: return 'quatre-vingt-dix';
+			}
+		} else if ($a<70){
+			return int2str($a-$a%10).' '.int2str($a%10);
+		} else if ($a<80){
+			return int2str(60).' '.int2str($a%20);
+		} else{
+			return int2str(80).' '.int2str($a%20);
+		}
+	} else if ($a==100){
+		return 'cent';
+	} else if ($a<200){
+		return int2str(100).' '.int2str($a%100);
+	} else if ($a<1000){
+		return int2str((int)($a/100)).' '.int2str(100).' '.int2str($a%100);
+	} else if ($a==1000){
+		return 'mille';
+	} else if ($a<2000){
+		return int2str(1000).' '.int2str($a%1000).' ';
+	} else if ($a<1000000){
+		return int2str((int)($a/1000)).' '.int2str(1000).' '.int2str($a%1000);
+	}  
+	//on pourrait pousser pour aller plus loin, mais c'est sans interret pour ce projet, et pas interessant, c'est pas non plus compliqué...
+}
+//echo int2str("999999"); // et voilà ce que ca donne
+
+//echo int2str(1900);
+
+function Arabe($a){
+	if ($a<13){
+		switch ($a){
+
+			case 1: return 'واحد';
+			case 2: return 'ثاني';
+			case 3: return 'ثالث';
+			case 4: return 'رابع';
+			case 5: return 'خامس';
+			case 6: return 'سادس';
+			case 7: return 'سابع';
+			case 8: return 'ثامن';
+			case 9: return 'تاسع';
+			case 10: return 'عاشر';
+			case 11: return 'حادي عشر';
+			case 12: return 'ثاني عشر';
+		}
+	} ////////////////FIN 13
+	
+	
+ if (12 < $a && $a < 20){
+ 
+		return Arabe($a%10).' '.'عشر' ;
+	} ///////////////////////FIN 
+	
+	
+ if (19 < $a && $a < 100 && $a%10==0){
+ 
+		switch ($a){
+			case 20: return 'عشرين';
+			case 30: return 'ثلاثين';
+			case 40: return 'أربعين';
+			case 50: return 'خمسين';
+			case 60: return 'ستين';
+			case 70: return 'سبعين';
+			case 80: return 'ثمانين';
+			case 90: return 'تسعين';
+		}
+	} ///////////////////////FIN 
+	
+
+
+ if (20 < $a && $a < 100 && $a%10!=0){
+ 
+		return Arabe($a%10).' و'.Arabe($a-$a%10) ;
+
+	} ///////////////////////FIN 
+	
+	
+ if (100 < $a && $a < 1000 && $a%100!=0){
+ 
+ 
+ 		return Arabe($a-$a%100).' و'.Arabe($a%100) ;
+	
+}
+
+}
+
+
+function ConverLettre($a,$direction){
+	if ($a<13){
+		switch ($a){
+			//case 0: return 'صفر';
+			case 1: return 'واحد';
+			case 2: return 'إثنين';
+			case 3: return 'ثلاثة';
+			case 4: return 'أربعة';
+			case 5: return 'خمسة';
+			case 6: return 'ستة';
+			case 7: return 'سبعة';
+			case 8: return 'ثمانية';
+			case 9: return 'تسعة';
+			case 10: return 'عشرة';
+			case 11: return 'إحدى عشر';
+			case 12: return 'إثناعشر';
+		}
+	} ////////////////FIN 13
+	
+	
+ if (12 < $a && $a < 20){
+ 
+		return ConverLettre($a%10,$direction).' '.'عشر' ;
+	} ///////////////////////FIN 
+	
+	
+ if (19 < $a && $a < 100 && $a%10==0){
+ 
+		switch ($a){
+			case 20: return 'عشرين';
+			case 30: return 'ثلاثين';
+			case 40: return 'أربعين';
+			case 50: return 'خمسين';
+			case 60: return 'ستين';
+			case 70: return 'سبعين';
+			case 80: return 'ثمانين';
+			case 90: return 'تسعين';
+		}
+	} ///////////////////////FIN 
+	
+
+
+ if (20 < $a && $a < 100 && $a%10!=0){
+ 
+		return ConverLettre($a%10,$direction).' و'.ConverLettre($a-$a%10,$direction) ;
+
+	} ///////////////////////FIN 
+	
+ if (99 < $a && $a < 1000 && $a%100==0){
+	
+		switch ($a){
+			case 100: return 'مائة';
+			case 200: return 'مئتان';
+			case 300: return 'ثلاثمائة';
+			case 400: return 'أربعمائة';
+			case 500: return 'خمسمائة';
+			case 600: return 'ستمائة';
+			case 700: return 'سبعمائة';
+			case 800: return 'ثمنمائة';
+			case 900: return 'تسعمائة';
+		}
+	}
+	
+ if (100 < $a && $a < 1000 && $a%100!=0){
+ 
+ 
+ 		return ConverLettre($a-$a%100,$direction).' و'.ConverLettre($a%100,$direction) ;
+	
+}
+
+
+ if (999 < $a && $a <= 2000 && $a%1000==0){
+
+		switch ($a){
+			case 1000: return 'ألف';
+			case 2000: return 'ألفين';
+		}}
+		
+ if (2000 < $a && $a < 10000 && $a%1000==0){
+
+		return ConverLettre($a/1000,$direction).' '.'آلاف' ;
+
+}
+
+
+
+
+///////////////////////////////////////////////// INVERSER LA DATE FRANCAIS///////////////////////////
+
+if($direction=="f") {
+
+ if (999 < $a && $a < 10000 && $a%1000!=0)   {
+ 
+		
+		return ConverLettre($a%100,$direction).' و'.ConverLettre($a%1000 - $a%100,$direction).' و'.ConverLettre($a-$a%1000,$direction) ;
+		
+}
+}
+
+
+///////////////////////////////////////////////// INVERSER LA DATE ARABE///////////////////////////
+if($direction=="a" || $direction=="") {
+
+
+ if (999 < $a && $a < 10000 && $a%1000!=0)   {
+ 
+ 		return ConverLettre($a-$a%1000,$direction).' و'.ConverLettre($a%1000,$direction) ;
+}
+}
+
+
+
+}
+
+
+
+
+
+
+?>
+
+
+<?php 
+
+ $valider=$_GET["valider"];
+ $jour=$_GET["jour"];
+ $mois=$_GET["mois"];
+ $annee=$_GET["annee"];
+ $convert=$_GET["convert"];
+
+
+?>
+</p>
+<p align="center">&nbsp;</p>
+<div align="center">
+
+
+<?php if($convert==1) { ?>
+
+
+<SCRIPT language="javascript">
+//D'autres scripts sur http://www.toutjavascript.com
+//Si vous utilisez ce script, merci de m'avertir !  < <voir adresse mail sur site> >
+
+function ok() {
+	//var choix=l.options[l.options.selectedIndex].value;
+	//window.opener.document.forms["origine"].elements["choix"].value=choix;
+	
+	window.opener.document.getElementById('<?php echo $_GET["modif1"]; ?>').value=document.getElementById('date1').value;
+	window.opener.document.getElementById('<?php echo $_GET["modif2"]; ?>').value=document.getElementById('date_m').value;
+	window.close();
+}
+</SCRIPT>
+
+
+  <form name="form1" method="get" action="">
+    <table width="363" border="1" cellpadding="0" cellspacing="0">
+      <tr>
+        <td width="42%" bgcolor="#EFEFEF"><div align="center">
+          <input name="annee" type="text" id="annee" size="10" maxlength="4">
+        </div></td>
+        <td width="33%" bgcolor="#EFEFEF"><div align="center">
+          <label>
+          <select name="mois" id="mois">
+		  
+            <option value=""></option>
+
+            <?php   
+			   	$Requete3 = "select mois,mois_a from mois  ";
+					mysql_query("SET NAMES 'UTF8' ");
+
+				
+	$result3 = @mysql_query($Requete3,$id) or die ("<br>Probl&egrave;me lors de la lecture de la table<br>".mysql_error());
+$n=mysql_num_rows($result3);
+
+for($i=0;$i<$n;$i++)
+{
+	$row = mysql_fetch_array($result3);
+//echo $idr;
+?>
+            <option value="<?php echo $row[0]; ?>"><?php echo $row[1]; }?></option>
+          </select>
+          </label>
+        </div></td>
+        <td width="25%" bgcolor="#EFEFEF"><div align="center">
+          <label>
+          <input name="jour" type="text" id="jour" size="4" maxlength="2">
+          </label>
+        </div></td>
+      </tr>
+    </table>
+    
+    <p>
+      <input name="modif2" type="hidden" id="modif2" value="<?php if($ch2=="") echo $_GET["modif2"]; else echo $ch2; ?>">
+      <input name="modif1" type="hidden" id="modif1" value="<?php if($ch1=="") echo $_GET["modif1"]; else echo $ch1; ?>">
+      <input name="modif" type="hidden" id="modif" value="<?php if($ch=="") echo $_GET["modif"]; else echo $ch; ?>">
+      <input name="convert" type="hidden" id="convert" value="<?php echo $convert; ?>">        <input name="req" type="hidden" id="req" value="<?php echo $req; ?>">
+        <input name="annee_declaration" type="hidden" id="annee_declaration" value="<?php echo $annee_declaration;?>">
+        <input name="code" type="hidden" id="code" value="<?php echo $code;?>">
+        <input name="partie" type="hidden" id="partie" value="<?php echo $partie;?>">
+
+	  
+	  
+      <input name="valider" type="submit" id="valider" value="تحويل التاريخ إلى حروف"/>
+    </p>
+    <p><?php echo $jour; ?> / <?php echo $mois ?> / &nbsp;<?php echo $annee; ?></p>
+    <p>
+      <input name="date_m" type="text" id="date_m" value="<?php echo"$jour/$mois/$annee"; ?>">
+    </p>
+    <p>
+      <textarea name="date1" cols="50" rows="2" id="date1" dir="rtl"><?php 
+	  
+if ($valider=="تحويل التاريخ إلى حروف")
+
+{
+
+
+
+echo Arabe($jour); echo" ";
+
+
+			   	$Requete3 = "select mois_f,mois_a from mois where `mois`='".$mois."'  ";
+					mysql_query("SET NAMES 'UTF8' ");
+				
+	$result3 = @mysql_query($Requete3,$id) or die ("<br>Probl&egrave;me lors de la lecture de la table<br>".mysql_error());
+	$row = mysql_fetch_array($result3);
+
+
+echo "$row[mois_a] ";
+
+echo ConverLettre($annee,$dir_date);
+}
+
+	  
+	  ?>
+      </textarea>
+    </p>
+    <p>
+      <label></label>
+      <input type="button" value="ok" onClick="ok()" />
+    </p>
+  </form>
+  
+
+    <?php
+	
+	
+			   	$Requete3 = "select mois_f,mois_a from mois where `mois`='".$mois."'  ";
+					mysql_query("SET NAMES 'UTF8' ");
+				
+	$result3 = @mysql_query($Requete3,$id) or die ("<br>Probl&egrave;me lors de la lecture de la table<br>".mysql_error());
+	$row = mysql_fetch_array($result3);
+
+
+$date_hlf="".int2str($jour)." $row[mois_f] ".int2str($annee)."";
+
+if($req==1 && $valider=="تحويل التاريخ إلى حروف")
+{
+ $Requete =  "UPDATE naissance SET `date_plf_p`='$date_hlf'  WHERE `code`='$code' and `annee_declaration`='$annee_declaration' and `partie`='$partie' ;";
+$result = @mysql_query($Requete,$id) or die ("<br>Problme d'execution de la requete <br>".mysql_error()); 
+}
+
+
+if($req==2 && $valider=="تحويل التاريخ إلى حروف")
+{
+ $Requete =  "UPDATE naissance SET `date_mlf_m`='$date_hlf'  WHERE `code`='$code' and `annee_declaration`='$annee_declaration' and `partie`='$partie' ;";
+$result = @mysql_query($Requete,$id) or die ("<br>Problme d'execution de la requete <br>".mysql_error()); 
+}
+
+
+if($req==5 && $valider=="تحويل التاريخ إلى حروف")
+{
+ $Requete =  "UPDATE naissance SET `date_mlf_d1`='$date_hlf'  WHERE `code`='$code' and `annee_declaration`='$annee_declaration' and `partie`='$partie' ;";
+$result = @mysql_query($Requete,$id) or die ("<br>Problme d'execution de la requete <br>".mysql_error()); 
+}
+	
+
+if($req==4 && $valider=="تحويل التاريخ إلى حروف")
+{
+ $Requete =  "UPDATE naissance SET `date_j_mlf`='$date_hlf'  WHERE `code`='$code' and `annee_declaration`='$annee_declaration' and `partie`='$partie' ;";
+$result = @mysql_query($Requete,$id) or die ("<br>Problme d'execution de la requete <br>".mysql_error()); 
+}
+
+
+if($req==6 && $valider=="تحويل التاريخ إلى حروف")
+{
+ $Requete =  "UPDATE deces SET `date_mlf`='$date_hlf'  WHERE `code`='$code' and `annee_declaration`='$annee_declaration' and `partie`='$partie' ;";
+$result = @mysql_query($Requete,$id) or die ("<br>Problme d'execution de la requete <br>".mysql_error()); 
+}
+
+
+if($req==7 && $valider=="تحويل التاريخ إلى حروف")
+{
+ $Requete =  "UPDATE deces SET `date_plf_p`='$date_hlf'  WHERE `code`='$code' and `annee_declaration`='$annee_declaration' and `partie`='$partie' ;";
+$result = @mysql_query($Requete,$id) or die ("<br>Problme d'execution de la requete <br>".mysql_error()); 
+}
+
+
+if($req==8 && $valider=="تحويل التاريخ إلى حروف")
+{
+ $Requete =  "UPDATE deces SET `date_mlf_m`='$date_hlf'  WHERE `code`='$code' and `annee_declaration`='$annee_declaration' and `partie`='$partie' ;";
+$result = @mysql_query($Requete,$id) or die ("<br>Problme d'execution de la requete <br>".mysql_error()); 
+}
+
+
+
+	
+	 } if($convert==2) { ?>
+	
+	  
+  
+  <SCRIPT language="javascript">
+//D'autres scripts sur http://www.toutjavascript.com
+//Si vous utilisez ce script, merci de m'avertir !  < <voir adresse mail sur site> >
+
+function ok() {
+	//var choix=l.options[l.options.selectedIndex].value;
+	//window.opener.document.forms["origine"].elements["choix"].value=choix;
+	
+	window.opener.document.getElementById('<?php echo $_GET["modif1"]; ?>').value=document.getElementById('date1').value;
+	window.close();
+}
+</SCRIPT>
+
+	
+	
+	
+  </p>
+  <form name="form1" method="get" action="">
+    <table width="363" border="1" cellpadding="0" cellspacing="0">
+      <tr>
+        <td width="42%" bgcolor="#EFEFEF"><div align="center">
+          <input name="annee" type="text" id="annee" size="10" maxlength="4">
+        </div></td>
+        <td width="33%" bgcolor="#EFEFEF"><div align="center">
+            <label>
+            <select name="mois" id="mois">
+			
+			            <option value=""></option>
+
+			
+			
+              <?php   
+			   	$Requete3 = "select mois,mois_arabe_a from mois  ";
+					mysql_query("SET NAMES 'UTF8' ");
+
+				
+	$result3 = @mysql_query($Requete3,$id) or die ("<br>Probl&egrave;me lors de la lecture de la table<br>".mysql_error());
+$n=mysql_num_rows($result3);
+
+for($i=0;$i<$n;$i++)
+{
+	$row = mysql_fetch_array($result3);
+//echo $idr;
+?>
+              <option value="<?php echo $row[0]; ?>"><?php echo $row[1]; }?></option>
+            </select>
+            </label>
+        </div></td>
+        <td width="25%" bgcolor="#EFEFEF"><div align="center">
+            <label>
+            <input name="jour" type="text" id="jour" size="4" maxlength="2">
+            </label>
+        </div></td>
+      </tr>
+       
+      <tr><td></td></tr>
+    </table>
+    <p>
+      <input name="modif2" type="hidden" id="modif2" value="<?php if($ch2=="") echo $_GET["modif2"]; else echo $ch2; ?>">
+      <input name="modif1" type="hidden" id="modif1" value="<?php if($ch1=="") echo $_GET["modif1"]; else echo $ch1; ?>">
+      <input name="modif" type="hidden" id="modif" value="<?php if($ch=="") echo $_GET["modif"]; else echo $ch; ?>">
+      <input name="convert" type="hidden" id="convert" value="<?php echo $convert; ?>">        <input name="req" type="hidden" id="req" value="<?php echo $req; ?>">
+        <input name="annee_declaration" type="hidden" id="annee_declaration" value="<?php echo $annee_declaration;?>">
+        <input name="code" type="hidden" id="code" value="<?php echo $code;?>">
+        <input name="partie" type="hidden" id="partie" value="<?php echo $partie;?>">
+
+      <input name="valider" type="submit" id="valider" value="تحويل التاريخ إلى حروف"/>
+    </p>
+    <p>
+      <textarea name="date1" cols="50" rows="2" id="date1" dir="rtl"><?php 
+	  
+if ($valider=="تحويل التاريخ إلى حروف")
+
+{
+
+echo Arabe($jour); echo" ";
+
+			   	$Requete3 = "select mois_arabe_a from mois where `mois`='".$mois."'  ";
+					mysql_query("SET NAMES 'UTF8' ");
+				
+	$result3 = @mysql_query($Requete3,$id) or die ("<br>Probl&egrave;me lors de la lecture de la table<br>".mysql_error());
+	$row = mysql_fetch_array($result3);
+
+
+echo "$row[mois_arabe_a] ";
+
+echo ConverLettre($annee,$dir_date_h);
+}
+	  
+	  ?>
+          </textarea>
+    </p>
+    <p>
+      <input type="button" value="ok" onClick="ok()" />
+    </p>
+  </form>
+  <p>&nbsp;</p>
+  <p><?php
+  
+ ////////////////////////////////INSERTION DATE FARNCAIS
+ 
+
+			   	$Requete3 = "select mois_arabe,mois_arabe_a from mois where `mois`='".$mois."'  ";
+					mysql_query("SET NAMES 'UTF8' ");
+				
+	$result3 = @mysql_query($Requete3,$id) or die ("<br>Probl&egrave;me lors de la lecture de la table<br>".mysql_error());
+	$row = mysql_fetch_array($result3);
+
+
+$date_hlf="".int2str($jour)." $row[mois_arabe] ".int2str($annee)."";
+
+if($req==1 && $valider=="تحويل التاريخ إلى حروف")
+{
+ $Requete =  "UPDATE naissance SET `date_hlf_p`='$date_hlf'  WHERE `code`='$code' and `annee_declaration`='$annee_declaration' and `partie`='$partie' ;";
+$result = @mysql_query($Requete,$id) or die ("<br>Problme d'execution de la requete <br>".mysql_error()); 
+}
+
+  
+if($req==2 && $valider=="تحويل التاريخ إلى حروف")
+{
+ $Requete =  "UPDATE naissance SET `date_hlf_m`='$date_hlf'  WHERE `code`='$code' and `annee_declaration`='$annee_declaration' and `partie`='$partie' ;";
+$result = @mysql_query($Requete,$id) or die ("<br>Problme d'execution de la requete <br>".mysql_error()); 
+}
+
+
+if($req==5 && $valider=="تحويل التاريخ إلى حروف")
+{
+ $Requete =  "UPDATE naissance SET `date_hlf_d1`='$date_hlf'  WHERE `code`='$code' and `annee_declaration`='$annee_declaration' and `partie`='$partie' ;";
+$result = @mysql_query($Requete,$id) or die ("<br>Problme d'execution de la requete <br>".mysql_error()); 
+}
+
+if($req==4 && $valider=="تحويل التاريخ إلى حروف")
+{
+ $Requete =  "UPDATE naissance SET `date_j_hlf`='$date_hlf'  WHERE `code`='$code' and `annee_declaration`='$annee_declaration' and `partie`='$partie' ;";
+$result = @mysql_query($Requete,$id) or die ("<br>Problme d'execution de la requete <br>".mysql_error()); 
+}
+
+
+if($req==6 && $valider=="تحويل التاريخ إلى حروف")
+{
+ $Requete =  "UPDATE deces SET `date_hlf`='$date_hlf'  WHERE `code`='$code' and `annee_declaration`='$annee_declaration' and `partie`='$partie' ;";
+$result = @mysql_query($Requete,$id) or die ("<br>Problme d'execution de la requete <br>".mysql_error()); 
+}
+
+if($req==7 && $valider=="تحويل التاريخ إلى حروف")
+{
+ $Requete =  "UPDATE deces SET `date_hlf_p`='$date_hlf'  WHERE `code`='$code' and `annee_declaration`='$annee_declaration' and `partie`='$partie' ;";
+$result = @mysql_query($Requete,$id) or die ("<br>Problme d'execution de la requete <br>".mysql_error()); 
+}
+
+
+if($req==8 && $valider=="تحويل التاريخ إلى حروف")
+{
+ $Requete =  "UPDATE deces SET `date_hlf_m`='$date_hlf'  WHERE `code`='$code' and `annee_declaration`='$annee_declaration' and `partie`='$partie' ;";
+$result = @mysql_query($Requete,$id) or die ("<br>Problme d'execution de la requete <br>".mysql_error()); 
+}
+
+
+  
+   } ?>
+ 
+  
+  
+  
+ 
+<?php if($convert==3) {  ?>
+
+
+<SCRIPT language="javascript">
+//D'autres scripts sur http://www.toutjavascript.com
+//Si vous utilisez ce script, merci de m'avertir !  < <voir adresse mail sur site> >
+
+function ok() {
+	//var choix=l.options[l.options.selectedIndex].value;
+	//window.opener.document.forms["origine"].elements["choix"].value=choix;
+	
+	window.opener.document.getElementById('<?php echo $_GET["modif1"]; ?>').value=document.getElementById('date1').value;
+	window.close();
+}
+</SCRIPT>
+
+
+  <form name="form1" method="get" action="">
+    <table width="363" border="1" cellpadding="0" cellspacing="0">
+      <tr>
+        <td width="42%" bgcolor="#EFEFEF"><div align="center">
+          <input name="annee" type="text" id="annee" size="10" maxlength="4" value="<?php 
+		  
+		  
+		  echo $row[annee];
+		  
+		  
+		  ?>">
+        </div></td>
+        <td width="33%" bgcolor="#EFEFEF"><div align="center">
+          <label>
+          <select name="mois" id="mois">
+
+            <?php   
+			   	$Requete3 = "select mois,mois_a from mois  ";
+					mysql_query("SET NAMES 'UTF8' ");
+
+				
+	$result3 = @mysql_query($Requete3,$id) or die ("<br>Probl&egrave;me lors de la lecture de la table<br>".mysql_error());
+$n=mysql_num_rows($result3);
+
+for($i=0;$i<$n;$i++)
+{
+	$row = mysql_fetch_array($result3);
+//echo $idr;
+?>
+            <option value="<?php echo $row[0]; ?>"><?php echo $row[1]; }?></option>
+          </select>
+          </label>
+        </div></td>
+        <td width="25%" bgcolor="#EFEFEF"><div align="center">
+          <label></label>
+          <input name="jour" type="text" id="jour" size="4" maxlength="2">
+        </div></td>
+      </tr>
+    </table>
+    
+    <p>
+      <input name="modif2" type="hidden" id="modif2" value="<?php if($ch2=="") echo $_GET["modif2"]; else echo $ch2; ?>">
+      <input name="modif1" type="hidden" id="modif1" value="<?php if($ch1=="") echo $_GET["modif1"]; else echo $ch1; ?>">
+      <input name="modif" type="hidden" id="modif" value="<?php if($ch=="") echo $_GET["modif"]; else echo $ch; ?>">
+      <input name="convert" type="hidden" id="convert" value="<?php echo $convert; ?>">        <input name="req" type="hidden" id="req" value="<?php echo $req; ?>">
+        <input name="annee_declaration" type="hidden" id="annee_declaration" value="<?php echo $annee_declaration;?>">
+        <input name="code" type="hidden" id="code" value="<?php echo $code;?>">
+        <input name="partie" type="hidden" id="partie" value="<?php echo $partie;?>">
+
+      <input name="valider" type="submit" id="valider" value="تحويل التاريخ إلى حروف"/>
+    </p>
+    <p><?php echo $jour; ?> / <?php echo $mois ?> / &nbsp;<?php echo $annee; ?></p>
+    <p>
+      <textarea name="date1" cols="50" rows="2" id="date1" dir="rtl"><?php 
+	  
+if ($valider=="تحويل التاريخ إلى حروف")
+
+{
+
+echo Arabe($jour); echo" ";
+
+
+			   	$Requete3 = "select mois_a from mois where `mois`='".$mois."'  ";
+					mysql_query("SET NAMES 'UTF8' ");
+				
+	$result3 = @mysql_query($Requete3,$id) or die ("<br>Probl&egrave;me lors de la lecture de la table<br>".mysql_error());
+	$row = mysql_fetch_array($result3);
+
+
+
+echo "$row[mois_a] ";
+
+echo ConverLettre($annee,$dir_date);
+}
+
+	  
+	  ?>
+      </textarea>
+    </p>
+    <p>
+      <label></label>
+      <input type="button" value="ok" onClick="ok()" />
+    </p>
+  </form>
+  
+ <?php } ?>
+
+
+
+
+  
+ 
+<?php if($convert==4) {  ?>
+
+
+<SCRIPT language="javascript">
+//D'autres scripts sur http://www.toutjavascript.com
+//Si vous utilisez ce script, merci de m'avertir !  < <voir adresse mail sur site> >
+
+function ok() {
+	//var choix=l.options[l.options.selectedIndex].value;
+	//window.opener.document.forms["origine"].elements["choix"].value=choix;
+	
+	window.opener.document.getElementById('<?php echo $_GET["modif1"]; ?>').value=document.getElementById('date1').value;
+	window.opener.document.getElementById('<?php echo $_GET["modif2"]; ?>').value=document.getElementById('annee_h').value;
+	window.close();
+}
+</SCRIPT>
+
+
+  <form name="form1" method="get" action="">
+    <table width="363" border="1" cellpadding="0" cellspacing="0">
+      <tr>
+        <td width="42%" bgcolor="#EFEFEF"><div align="center">
+            <select name="annee" id="annee">
+              <?php   
+			   	$Requete3 = "select annee from annee WHERE `type`=1 order by annee desc  ";
+					mysql_query("SET NAMES 'UTF8' ");
+
+				
+	$result3 = @mysql_query($Requete3,$id) or die ("<br>Probl&egrave;me lors de la lecture de la table<br>".mysql_error());
+$n=mysql_num_rows($result3);
+
+for($i=0;$i<$n;$i++)
+{
+	$row = mysql_fetch_array($result3);
+//echo $idr;
+?>
+              <option value="<?php echo $row[0]; ?>"><?php echo $row[0]; }?></option>
+              <?php 
+$debut=$row[0]-1;
+$fin=$row[0]-70;
+$i=$debut;
+while($i > $fin) {
+?>
+              <option value="<?php echo $i; ?>"><?php echo $i; $i=$i-1; } ?></option>
+            </select>
+        </div></td>
+        <td width="33%" bgcolor="#EFEFEF"><div align="center">
+            <label>
+            <select name="mois" id="select2">
+              <?php   
+			   	$Requete3 = "select mois,mois_arabe_a from mois  ";
+					mysql_query("SET NAMES 'UTF8' ");
+
+				
+	$result3 = @mysql_query($Requete3,$id) or die ("<br>Probl&egrave;me lors de la lecture de la table<br>".mysql_error());
+$n=mysql_num_rows($result3);
+
+for($i=0;$i<$n;$i++)
+{
+	$row = mysql_fetch_array($result3);
+//echo $idr;
+?>
+              <option value="<?php echo $row[0]; ?>"><?php echo $row[1]; }?></option>
+            </select>
+            </label>
+        </div></td>
+        <td width="25%" bgcolor="#EFEFEF"><div align="center">
+            <label>
+            <select name="jour" id="select4">
+              <option>01</option>
+              <option>02</option>
+              <option>03</option>
+              <option>04</option>
+              <option>05</option>
+              <option>06</option>
+              <option>07</option>
+              <option>08</option>
+              <option>09</option>
+              <option>10</option>
+              <option>11</option>
+              <option>12</option>
+              <option>13</option>
+              <option>14</option>
+              <option>15</option>
+              <option>16</option>
+              <option>17</option>
+              <option>18</option>
+              <option>19</option>
+              <option>20</option>
+              <option>21</option>
+              <option>22</option>
+              <option>23</option>
+              <option>24</option>
+              <option>25</option>
+              <option>26</option>
+              <option>27</option>
+              <option>28</option>
+              <option>29</option>
+              <option>30</option>
+            </select>
+            </label>
+        </div></td>
+      </tr>
+      <tr>
+        <td></td>
+      </tr>
+    </table>
+    <p>
+      <input name="modif2" type="hidden" id="modif2" value="<?php if($ch2=="") echo $_GET["modif2"]; else echo $ch2; ?>">
+      <input name="modif1" type="hidden" id="modif1" value="<?php if($ch1=="") echo $_GET["modif1"]; else echo $ch1; ?>">
+      <input name="modif" type="hidden" id="modif" value="<?php if($ch=="") echo $_GET["modif"]; else echo $ch; ?>">
+      <input name="convert" type="hidden" id="convert" value="<?php echo $convert; ?>">        <input name="req" type="hidden" id="req" value="<?php echo $req; ?>">
+        <input name="annee_declaration" type="hidden" id="annee_declaration" value="<?php echo $annee_declaration;?>">
+        <input name="code" type="hidden" id="code" value="<?php echo $code;?>">
+        <input name="partie" type="hidden" id="partie" value="<?php echo $partie;?>">
+
+      <input name="valider" type="submit" id="valider" value="تحويل التاريخ إلى حروف"/>
+    </p>
+    <p><?php echo $jour; ?> / <?php echo $mois ?> / &nbsp;<?php echo $annee; ?></p>
+    <p>
+      <label>
+      <input name="annee_h" type="text" id="annee_h" size="10" maxlength="4" value="<?php echo $annee ?>">
+      </label>
+    </p>
+    <p>
+      <textarea name="date1" cols="50" rows="2" id="date1" dir="rtl"><?php 
+	  
+if ($valider=="تحويل التاريخ إلى حروف")
+
+{
+
+echo Arabe($jour); echo" ";
+
+
+			   	$Requete3 = "select mois_arabe_a from mois where `mois`='".$mois."'  ";
+					mysql_query("SET NAMES 'UTF8' ");
+				
+	$result3 = @mysql_query($Requete3,$id) or die ("<br>Probl&egrave;me lors de la lecture de la table<br>".mysql_error());
+	$row = mysql_fetch_array($result3);
+
+
+
+echo "$row[mois_arabe_a] ";
+
+echo ConverLettre($annee,$dir_date_h);
+}
+
+	  
+	  ?>
+      </textarea>
+    </p>
+    <p>
+      <label></label>
+      <input type="button" value="ok" onClick="ok()" />
+    </p>
+  </form>
+  
+ <?php } ?>
+  
+
+
+  
+  
+  </p>
+</div>
+
+  <?php    }else{ ?> 
+  
+  Vous n'avez pas le droit de voir cette page
+  <?php } ?>
+  

@@ -1,0 +1,64 @@
+
+CREATE TRIGGER `update_bayanate` BEFORE UPDATE ON `naissance`
+ FOR EACH ROW BEGIN
+
+IF NEW.sex!=OLD.sex THEN
+
+UPDATE  `mention_p` SET `sex` = NEW.sex WHERE `annee_declaration`=OLD.annee_declaration AND `code`=OLD.code and `deces_naissance`=0 and `date` >= NEW.date_n ;
+END IF;
+
+
+
+
+END $$
+
+
+
+
+CREATE TRIGGER `update_bayanate_deces` BEFORE UPDATE ON `deces`
+ FOR EACH ROW BEGIN
+
+IF NEW.sex!=OLD.sex THEN
+
+UPDATE  `mention_p` SET `sex` = NEW.sex WHERE `annee_declaration`=OLD.annee_declaration AND `code`=OLD.code and `deces_naissance`=1 and `date` >= NEW.date_n;
+END IF;
+
+
+END $$
+
+
+CREATE TRIGGER `deces_n` AFTER INSERT ON `mention_p`
+ FOR EACH ROW BEGIN
+
+DECLARE d_etrange1 INT;
+
+IF NEW.jugement=12  THEN
+UPDATE  `naissance` SET `mort`=1 WHERE `annee_declaration`=NEW.annee_declaration AND `code`=NEW.code  ;
+SET @d_etrange1 :=(SELECT d_etrange from administration); 
+UPDATE  `administration` SET `d_etrange`=1+@d_etrange1 ;
+END IF;
+
+
+IF NEW.jugement=24  THEN
+UPDATE  `naissance` SET `mort` = 1 WHERE `annee_declaration`=NEW.annee_declaration AND `code`=NEW.code  ;
+END IF;
+
+END $$
+
+
+CREATE TRIGGER `supp_deces_n` BEFORE DELETE ON `mention_p`
+ FOR EACH ROW BEGIN
+
+DECLARE d_etrange1 INT;
+
+IF OLD.jugement=12 THEN
+UPDATE  `naissance` SET `mort` = 0 WHERE `annee_declaration`=OLD.annee_declaration AND `code`=OLD.code  ;
+SET @d_etrange1 :=(SELECT d_etrange from administration); 
+UPDATE  `administration` SET `d_etrange` = -1+@d_etrange1;
+END IF;
+
+IF OLD.jugement=24 THEN
+UPDATE  `naissance` SET `mort` = 0 WHERE `annee_declaration`=OLD.annee_declaration AND `code`=OLD.code  ;
+END IF;
+
+END $$
